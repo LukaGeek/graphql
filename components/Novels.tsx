@@ -3,8 +3,8 @@ import React, { FormEvent, useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { INovel } from "@/typings";
 import { GET_NOVELS } from "@/graphql/queries";
-import { ADD_NOVEL } from "@/graphql/mutations";
 import { Novel } from "./Novel";
+import { ADD_NOVEL } from "@/graphql/mutations";
 
 export const Novels = () => {
   const [title, setTitle] = useState("");
@@ -12,7 +12,7 @@ export const Novels = () => {
   const { data, loading, error } = useQuery(GET_NOVELS);
 
   const [addNovel] = useMutation(ADD_NOVEL, {
-    variables: { image, title },
+    variables: { title, image },
     refetchQueries: [{ query: GET_NOVELS }],
   });
 
@@ -24,20 +24,25 @@ export const Novels = () => {
     }
   }, [data]);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (image === "" || title === "") return alert("Enter fields");
 
-    addNovel({ variables: { image, title } });
-    setTitle("");
+    try {
+      const { data } = await addNovel({ variables: { title, image } });
+      console.log("Novel added:", data);
+    } catch (error) {
+      console.error("Mutation failed:", error);
+      alert("Error occurred while adding novel");
+    }
+
     setImage("");
+    setTitle("");
   };
 
   if (loading)
     return (
-      <p className="text-white flex items-center justify-center">
-        Loading ....
-      </p>
+      <p className="text-white flex items-center justify-center">Loading...</p>
     );
   if (error)
     return (

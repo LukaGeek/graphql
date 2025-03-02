@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/config";
 import { DELETE_NOVEL } from "@/graphql/mutations";
 import { GET_NOVELS } from "@/graphql/queries";
 import { INovel } from "@/typings";
@@ -17,12 +16,13 @@ export const Novel = ({ novel }: Props) => {
   });
   return (
     <article className="flex flex-col p-4  bg-slate-200 dark:bg-zinc-800 hover:scale-110 shadow-sm hover:shadow-lg hover:bg-slate-300 transition duration-300 ease-out text-white ">
-      {/* image */}
       {novel.image && (
         <div>
           <Image
             src={novel.image}
             alt={novel.title}
+            width={120}
+            height={120}
             className="h-56 w-full object-contain rounded-t-lg shadow-md"
           />
         </div>
@@ -39,7 +39,7 @@ export const Novel = ({ novel }: Props) => {
         <p className="text-white text-lg">Authors :{novel?.authors.length}</p>
       </div>
       <Link
-        href={`${BASE_URL}/novel/${novel.id}`}
+        href={`/novel/${novel.id}`}
         className="bg-orange-500 mt-5 p-2 rounded-lg"
       >
         Read More
